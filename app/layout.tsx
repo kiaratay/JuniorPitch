@@ -8,8 +8,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "JUNIOR",
-  description: "Template desc for now."
+  title: "KinLink",
+  description:
+    "AI health companion for older people and their families — voice intake, cultural context, coordinated care."
 };
 
 export default function RootLayout({

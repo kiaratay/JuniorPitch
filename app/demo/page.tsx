@@ -1,21 +1,16 @@
 import type { Metadata } from "next";
-import { JuniorDemoWidget } from "../../components/JuniorDemoWidget";
+import { KinLinkDemoWidget } from "../../components/KinLinkDemoWidget";
 
 export const metadata: Metadata = {
-  title: "Junior demo · Pitch",
-  description: "Interactive scrollytelling demo for Junior: AI junior analyst for private credit."
+  title: "KinLink · Live demo",
+  description:
+    "Interactive walkthrough: KinLink — AI health companion for older people and their families across language and culture."
 };
 
 export default function DemoPage() {
   return (
-    <div
-      data-junior-demo-scroll-root
-      className="h-dvh snap-y snap-mandatory overflow-y-auto overscroll-y-contain scroll-pb-[7.5rem] scroll-smooth"
-      style={{ backgroundColor: "#F7F6F3" }}
-    >
-      <div className="mx-auto max-w-[1000px] px-4 py-6 md:py-8">
-        <JuniorDemoWidget />
-      </div>
+    <div className="min-h-dvh bg-[#F7F6F3]">
+      <KinLinkDemoWidget />
     </div>
   );
 }
