@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { publicAsset } from "@/utils/public-asset";
 
 const SOURCES = [
   {
@@ -37,7 +38,7 @@ export function PitchStudyCitations() {
           }}
         >
           <Image
-            src={s.src}
+            src={publicAsset(s.src)}
             alt={s.alt}
             width={1200}
             height={780}

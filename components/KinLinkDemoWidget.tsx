@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { publicAsset } from "@/utils/public-asset";
 import { PitchStudyCitations } from "./PitchStudyCitations";
 import { Fragment, useEffect, useRef, useState } from "react";
 
@@ -142,7 +143,7 @@ const WEARABLE_GALLERY: {
   {
     key: "lineup",
     label: "Product lineup",
-    src: "/kinlink-wearable-lineup.png",
+    src: publicAsset("/kinlink-wearable-lineup.png"),
     w: 1024,
     h: 571,
     alt: "KinLink Wearable lineup: four ear-cuff devices in yellow gold, rose gold, matte black, and polished silver, showing sensor channels along the inner curve."
@@ -150,7 +151,7 @@ const WEARABLE_GALLERY: {
   {
     key: "rose-elder",
     label: "On-body · rose gold",
-    src: "/kinlink-wearable-ear-gold-elder.png",
+    src: publicAsset("/kinlink-wearable-ear-gold-elder.png"),
     w: 810,
     h: 1024,
     alt: "Older man smiling, wearing a rose-gold KinLink ear-cuff wearable with sensor accents along the inner curve."
@@ -158,7 +159,7 @@ const WEARABLE_GALLERY: {
   {
     key: "rose-profile",
     label: "On-body · profile",
-    src: "/kinlink-wearable-ear-rose-midlife.png",
+    src: publicAsset("/kinlink-wearable-ear-rose-midlife.png"),
     w: 810,
     h: 1024,
     alt: "Man in profile smiling, wearing a rose-gold KinLink ear-cuff that follows the helix of the ear."
@@ -166,7 +167,7 @@ const WEARABLE_GALLERY: {
   {
     key: "gold-outdoor",
     label: "On-body · outdoor",
-    src: "/kinlink-wearable-ear-gold-outdoor.png",
+    src: publicAsset("/kinlink-wearable-ear-gold-outdoor.png"),
     w: 679,
     h: 1024,
     alt: "Older woman outdoors, wearing a gold KinLink ear-cuff wearable with sensor detail along the inner edge."
@@ -340,7 +341,7 @@ function MsLimPersonaPlayground() {
           <div className="flex flex-col items-center gap-3 p-4 md:items-stretch md:p-5">
             <div className="relative h-[128px] w-[100px] shrink-0 overflow-hidden rounded-[8px] border-2 border-[#1A1A1A] bg-[#0b0b0b] md:h-[140px] md:w-[108px]">
               <Image
-                src="/ms-lim-persona.png"
+                src={publicAsset("/ms-lim-persona.png")}
                 alt="Illustrated portrait of Ms Lim, the scenario holder."
                 fill
                 className="object-contain object-[center_85%]"
@@ -513,7 +514,7 @@ export function KinLinkDemoWidget() {
           </p>
           <div className="relative mt-5 w-full max-w-[min(920px,calc(100vw-2rem))] mx-auto overflow-hidden rounded-[12px] border border-[rgba(0,0,0,0.08)] bg-white shadow-[0_8px_30px_-12px_rgba(0,0,0,0.12)]">
             <Image
-              src="/kinlink-nhs-app-reference.png"
+              src={publicAsset("/kinlink-nhs-app-reference.png")}
               alt="Official NHS app: three screens showing Prescriptions, Appointments, and Your health tabs with dense list navigation."
               width={1024}
               height={639}
@@ -546,7 +547,7 @@ export function KinLinkDemoWidget() {
               </p>
               <div className="overflow-hidden rounded-[14px] border border-[rgba(0,0,0,0.08)] bg-gradient-to-b from-[#E8F3FA] to-[#F6FAFD] shadow-[0_10px_36px_-20px_rgba(40,80,120,0.35)]">
                 <Image
-                  src="/kinlink-ui-patient-view.png"
+                  src={publicAsset("/kinlink-ui-patient-view.png")}
                   alt="KinLink patient screen: greeting Hi I am KinLink, tap the microphone to talk, with quick actions I feel sick and I am at a GP appointment, and Start consultation."
                   width={1009}
                   height={1024}
@@ -561,7 +562,7 @@ export function KinLinkDemoWidget() {
               </p>
               <div className="overflow-hidden rounded-[14px] border border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] shadow-[0_10px_36px_-20px_rgba(40,80,120,0.25)]">
                 <Image
-                  src="/kinlink-ui-carer-view.png"
+                  src={publicAsset("/kinlink-ui-carer-view.png")}
                   alt="KinLink carer dashboard: Mum's dashboard with AI voice session summary in Mandarin, suggested actions, medications and appointments."
                   width={1024}
                   height={754}
