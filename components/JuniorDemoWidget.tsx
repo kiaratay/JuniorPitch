@@ -125,6 +125,37 @@ const DEMO_CSS = `
   70% { box-shadow: 0 0 0 14px rgba(107, 79, 187, 0); }
   100% { box-shadow: 0 0 0 0 rgba(107, 79, 187, 0); }
 }
+.junior-dem-play-cta {
+  position: relative;
+  isolation: isolate;
+}
+.junior-dem-play-cta::before,
+.junior-dem-play-cta::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  border: 2px solid #1A1A1A;
+  pointer-events: none;
+  opacity: 0;
+  z-index: -1;
+  animation: junior-dem-play-pulse 2.2s cubic-bezier(0.22, 0.6, 0.2, 1) infinite;
+}
+.junior-dem-play-cta::after { animation-delay: 1.1s; }
+.junior-dem-play-cta:hover::before,
+.junior-dem-play-cta:hover::after { animation-play-state: paused; opacity: 0; }
+@keyframes junior-dem-play-pulse {
+  0% { transform: scale(0.92); opacity: 0.55; }
+  70% { transform: scale(1.18); opacity: 0; }
+  100% { transform: scale(1.18); opacity: 0; }
+}
+.junior-dem-play-hint {
+  animation: junior-dem-play-hint 2.4s ease-in-out infinite;
+}
+@keyframes junior-dem-play-hint {
+  0%, 100% { opacity: 0.55; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(2px); }
+}
 @media (prefers-reduced-motion: reduce) {
   .junior-dem-read-band.animate,
   .junior-dem-read-shine.animate { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
@@ -141,6 +172,9 @@ const DEMO_CSS = `
   .junior-dem-shell-in,
   .junior-dem-attach-in { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   .junior-dem-caret { animation: none !important; opacity: 0 !important; }
+  .junior-dem-play-cta::before,
+  .junior-dem-play-cta::after,
+  .junior-dem-play-hint { animation: none !important; }
 }
 `;
 
@@ -1099,6 +1133,7 @@ export function JuniorDemoWidget() {
   const [b1Count, setB1Count] = useState(0);
   const [b2Stage, setB2Stage] = useState(0);
   const [b2DraftComposerOpen, setB2DraftComposerOpen] = useState(false);
+  const [b2ModelSheetOpen, setB2ModelSheetOpen] = useState(false);
   const [scanKey, setScanKey] = useState(0);
   const [b3Tier, setB3Tier] = useState<1 | 2 | 3 | null>(null);
   const [b4Streams, setB4Streams] = useState([false, false, false, false]);
@@ -1259,6 +1294,7 @@ export function JuniorDemoWidget() {
   const beat2Reset = () => {
     setB2Stage(0);
     setB2DraftComposerOpen(false);
+    setB2ModelSheetOpen(false);
     setScanKey((k) => k + 1);
   };
 
@@ -1277,7 +1313,7 @@ export function JuniorDemoWidget() {
       >
         <header className="snap-start snap-always box-border flex min-h-dvh flex-col justify-center border-b border-[rgba(0,0,0,0.08)] px-3 pb-14 pt-12 md:pb-20 md:pt-14">
           <p className="m-0 font-mono text-[10px] uppercase tracking-[0.14em] text-[#8A8A8A]" style={monoFont}>
-            Junior · Pitch deck · KLC Financial Intelligence
+            Team KLC: Kiara, Lee and Cosmin
           </p>
           <h1 className="mt-5 m-0 max-w-[36ch] text-[clamp(1.75rem,5.2vw,3.15rem)] font-medium leading-[1.08] tracking-[-0.03em] text-[#1A1A1A]">
             A tool designed to replace junior credit analysts
@@ -1671,11 +1707,11 @@ export function JuniorDemoWidget() {
               <div
                 className={cn(
                   "junior-dem-b2-surface-a",
-                  b2DraftComposerOpen
+                  b2DraftComposerOpen || b2ModelSheetOpen
                     ? "pointer-events-none blur-[0.5px] [transform:translateX(-8px)_scale(0.985)] opacity-0"
                     : "opacity-100 [transform:translateX(0)_scale(1)]"
                 )}
-                aria-hidden={b2DraftComposerOpen}
+                aria-hidden={b2DraftComposerOpen || b2ModelSheetOpen}
               >
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className={cn(outlookCard, "relative")}>
@@ -1860,7 +1896,17 @@ export function JuniorDemoWidget() {
                               3 / 3
                             </span>
                           </div>
-                          <StepRow mark="check" color="green">
+                          <StepRow
+                            mark="check"
+                            color="green"
+                            onClick={() => {
+                              setB2DraftComposerOpen(false);
+                              setB2ModelSheetOpen(true);
+                            }}
+                            expanded={b2ModelSheetOpen}
+                            caption="Excel · open pricing model"
+                            pressedLabel="Open Camden Bridge pricing model in Excel view"
+                          >
                             <strong className="font-semibold text-[#1A1A1A]">Model populated.</strong> Base IRR
                             14.2% · Junior-adjusted (−10% GDV) 12.4% · downside 9.1%.
                           </StepRow>
@@ -1969,6 +2015,213 @@ export function JuniorDemoWidget() {
                   <div className="border-t border-[#edebe9] bg-[#faf9f8] px-3 py-2 text-[10px] text-[#605e5c]">
                     Folder: <span className="font-medium text-[#323130]">Drafts</span> · Brokers · Halkin · Camden Bridge
                   </div>
+                </div>
+              </div>
+
+              <div
+                key={b2ModelSheetOpen ? "model-open" : "model-closed"}
+                className={cn(
+                  "absolute inset-0 z-20 flex flex-col overflow-hidden rounded-[2px] border border-[#d2d0ce] bg-white",
+                  "shadow-[0_18px_48px_rgba(0,0,0,0.18)] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,0,0.2,1)]",
+                  b2ModelSheetOpen
+                    ? "junior-dem-sheet-in pointer-events-auto opacity-100 [transform:translateY(0)_scale(1)]"
+                    : "pointer-events-none opacity-0 [transform:translateY(8px)_scale(0.992)]"
+                )}
+                style={{ fontFamily: msFont }}
+                role="region"
+                aria-label="Camden Bridge pricing model spreadsheet"
+                aria-hidden={!b2ModelSheetOpen}
+              >
+                <div className="flex items-center gap-1 border-b border-[#0e6b3b] bg-[#107c41] px-2 py-1 text-white">
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[11.5px] font-medium hover:bg-white/10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-white"
+                    onClick={() => setB2ModelSheetOpen(false)}
+                    aria-label="Back to Junior reasoning"
+                  >
+                    <span className="text-[14px] leading-none" aria-hidden>
+                      ←
+                    </span>
+                    Back
+                  </button>
+                  <span className="text-white/40" aria-hidden>
+                    |
+                  </span>
+                  <span className="flex h-[18px] w-[18px] items-center justify-center rounded-sm bg-white/15 text-[11px] font-bold">
+                    X
+                  </span>
+                  <span className="truncate text-[11px] font-semibold">
+                    Camden Bridge — Pricing Model.xlsx · Excel for the web
+                  </span>
+                  <span className="ml-auto hidden gap-1 sm:flex">
+                    {["AutoSave", "Share"].map((lab) => (
+                      <span key={lab} className="rounded-sm bg-white/10 px-1.5 py-0.5 text-[10px]">
+                        {lab}
+                      </span>
+                    ))}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1 border-b border-[#d2d0ce] bg-[#f3f2f1] px-2 py-1 text-[11px] text-[#323130]">
+                  {["File", "Home", "Insert", "Formulas", "Data", "Review"].map((lab, i) => (
+                    <span
+                      key={lab}
+                      className={cn(
+                        "rounded-sm px-1.5 py-0.5",
+                        i === 1 ? "bg-white font-semibold text-[#107c41] shadow-[inset_0_-2px_0_#107c41]" : "hover:bg-white"
+                      )}
+                    >
+                      {lab}
+                    </span>
+                  ))}
+                  <span className="text-[#c8c6c4]" aria-hidden>
+                    |
+                  </span>
+                  <span className="rounded-sm bg-white px-1.5 py-0.5 text-[10px] text-[#605e5c]">
+                    CAMDEN_BRIDGE_PRICING_v1
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 border-b border-[#d2d0ce] bg-white px-2 py-1 text-[11px]">
+                  <span className="rounded-sm border border-[#c8c6c4] bg-[#faf9f8] px-2 py-0.5 font-mono text-[10px] text-[#323130]" style={monoFont}>
+                    B14
+                  </span>
+                  <span className="text-[#c8c6c4]" aria-hidden>
+                    fx
+                  </span>
+                  <span className="truncate font-mono text-[10.5px] text-[#107c41]" style={monoFont}>
+                    =SCENARIO_IRR(Inputs!B3:B12, Adjustments!Junior_GDV)
+                  </span>
+                </div>
+
+                <div className="min-h-0 flex-1 overflow-y-auto bg-white">
+                  <div className="border-b border-[#edebe9] px-3 pb-2 pt-3">
+                    <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.04em] text-[#605e5c]">
+                      Workbook · Pricing model · 3 scenarios
+                    </p>
+                    <p className="mt-1 m-0 text-[14px] font-semibold text-[#201f1e]">
+                      Camden Bridge · £12m senior · 18-month bridge
+                    </p>
+                    <p className="mt-0.5 m-0 text-[11px] text-[#605e5c]">
+                      Sponsor Acme · 47 Camden High St NW1 · 24-unit resi conversion
+                    </p>
+                  </div>
+
+                  <div className="px-3 pt-2">
+                    <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.3fr)] border border-[#d2d0ce] text-[11px]">
+                      <div className="border-b border-[#d2d0ce] bg-[#f3f2f1] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-[#323130]">
+                        Driver
+                      </div>
+                      <div className="border-b border-l border-[#d2d0ce] bg-[#f3f2f1] px-2 py-1 text-right text-[10px] font-semibold uppercase tracking-[0.04em] text-[#323130]">
+                        Base
+                      </div>
+                      <div className="border-b border-l border-[#d2d0ce] bg-[#f3f2f1] px-2 py-1 text-right text-[10px] font-semibold uppercase tracking-[0.04em] text-[#107c41]">
+                        Junior-adj
+                      </div>
+                      <div className="border-b border-l border-[#d2d0ce] bg-[#f3f2f1] px-2 py-1 text-right text-[10px] font-semibold uppercase tracking-[0.04em] text-[#a4262c]">
+                        Downside
+                      </div>
+                      <div className="border-b border-l border-[#d2d0ce] bg-[#f3f2f1] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-[#323130]">
+                        Source
+                      </div>
+                      {(
+                        [
+                          { label: "Exit GDV", base: "£18.5m", adj: "£16.65m", down: "£15.7m", source: "−10% GDV haircut · NW1 comps" },
+                          { label: "Build cost", base: "£3.80m", adj: "£3.93m", down: "£4.10m", source: "ONS build inflation Apr 26" },
+                          { label: "Contingency", base: "5.0%", adj: "7.5%", down: "10.0%", source: "Junior policy floor" },
+                          { label: "Senior cost of debt", base: "8.20%", adj: "8.95%", down: "9.50%", source: "BoE +25bps · spread widening" },
+                          { label: "Exit window", base: "18m", adj: "21m", down: "24m", source: "Refi calendar · Q4 stress" },
+                          { label: "LTC peak", base: "71%", adj: "76%", down: "82%", source: "Modelled cost stack" }
+                        ] as const
+                      ).map((row, idx) => {
+                        const cellAnim: React.CSSProperties = { animationDelay: `${idx * 90 + 100}ms` };
+                        return (
+                          <div key={row.label} className="contents text-[11.5px]">
+                            <div className="border-b border-[#edebe9] bg-[#faf9f8] px-2 py-1 text-[#201f1e]">
+                              {row.label}
+                            </div>
+                            <div className="border-b border-l border-[#edebe9] px-2 py-1 text-right tabular-nums text-[#605e5c]">
+                              {row.base}
+                            </div>
+                            <div
+                              className="junior-dem-cell-pop border-b border-l border-[#edebe9] bg-[#f5fbf7] px-2 py-1 text-right tabular-nums font-semibold text-[#107c41]"
+                              style={cellAnim}
+                            >
+                              {row.adj}
+                            </div>
+                            <div
+                              className="junior-dem-cell-pop border-b border-l border-[#edebe9] bg-[#fdf3f4] px-2 py-1 text-right tabular-nums font-semibold text-[#a4262c]"
+                              style={cellAnim}
+                            >
+                              {row.down}
+                            </div>
+                            <div className="border-b border-l border-[#edebe9] px-2 py-1 text-[10.5px] text-[#605e5c]">
+                              {row.source}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="mt-3 px-3">
+                    <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.04em] text-[#605e5c]">
+                      Output · Scenario IRR
+                    </p>
+                    <div className="mt-1 grid gap-2 sm:grid-cols-3">
+                      {(
+                        [
+                          { label: "Base", value: "14.2%", sub: "Sponsor case", tone: "neutral" as const },
+                          { label: "Junior-adj", value: "12.4%", sub: "−10% GDV · mandate floors", tone: "positive" as const },
+                          { label: "Downside", value: "9.1%", sub: "Stress: cost +8% · refi delayed", tone: "negative" as const }
+                        ]
+                      ).map((o, idx) => (
+                        <div
+                          key={o.label}
+                          className={cn(
+                            "junior-dem-row-pop rounded-sm border px-2.5 py-2",
+                            o.tone === "positive"
+                              ? "border-[#107c41]/30 bg-[#f5fbf7]"
+                              : o.tone === "negative"
+                                ? "border-[#a4262c]/30 bg-[#fdf3f4]"
+                                : "border-[#edebe9] bg-[#faf9f8]"
+                          )}
+                          style={{ animationDelay: `${550 + idx * 90}ms`, animationFillMode: "forwards" }}
+                        >
+                          <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.04em] text-[#605e5c]">
+                            {o.label}
+                          </p>
+                          <p
+                            className={cn(
+                              "mt-1 m-0 text-[18px] font-semibold tabular-nums",
+                              o.tone === "positive"
+                                ? "text-[#107c41]"
+                                : o.tone === "negative"
+                                  ? "text-[#a4262c]"
+                                  : "text-[#201f1e]"
+                            )}
+                          >
+                            {o.value}
+                          </p>
+                          <p className="mt-0.5 m-0 text-[10px] text-[#605e5c]">{o.sub}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-3 border-t border-[#edebe9] px-3 py-2 text-[10px] text-[#605e5c]">
+                    Source · Camden pricing model v1 · Junior populated 11 cells · 0.38s
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 border-t border-[#d2d0ce] bg-[#f3f2f1] px-2 py-1">
+                  <span className="rounded-t-sm bg-white px-2 py-0.5 text-[10.5px] font-semibold text-[#107c41] shadow-[inset_0_-2px_0_#107c41]">
+                    Model · Camden Bridge
+                  </span>
+                  <span className="rounded-t-sm px-2 py-0.5 text-[10.5px] text-[#605e5c]">
+                    Inputs
+                  </span>
+                  <span className="rounded-t-sm px-2 py-0.5 text-[10.5px] text-[#605e5c]">
+                    Adjustments
+                  </span>
+                  <span className="ml-auto text-[10px] text-[#605e5c]">Ready · Calculated</span>
                 </div>
               </div>
             </div>
@@ -2558,10 +2811,24 @@ export function JuniorDemoWidget() {
             ) : null}
           </div>
 
-          <div className="mt-4 flex justify-center">
-            <button type="button" className={btnPrimary} onClick={runB4Replay}>
-              ▶ Watch Junior catch a risk in real time
+          <div className="relative z-20 mt-6 flex flex-col items-center gap-2">
+            <button
+              type="button"
+              onClick={runB4Replay}
+              className="junior-dem-play-cta group inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[#1A1A1A] px-6 py-3 text-[13px] font-medium text-white shadow-[0_6px_22px_-6px_rgba(26,26,26,0.55)] transition-transform duration-200 ease-out hover:scale-[1.04] hover:shadow-[0_10px_28px_-6px_rgba(26,26,26,0.6)] active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6B4FBB]"
+              aria-label="Watch Junior catch a risk in real time"
+            >
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/15 text-[10px] transition-transform duration-200 group-hover:translate-x-0.5">
+                ▶
+              </span>
+              Watch Junior catch a risk in real time
             </button>
+            <p
+              className="junior-dem-play-hint m-0 font-mono text-[10px] uppercase tracking-[0.18em] text-[#8A8A8A]"
+              style={monoFont}
+            >
+              Click to play
+            </p>
           </div>
         </div>
         </section>

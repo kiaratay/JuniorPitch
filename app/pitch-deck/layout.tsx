@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pitch deck · Junior",
-  description: "Junior: AI junior analyst for private credit funds."
+  title: "Pitch deck · Aria",
+  description:
+    "Aria: AI health companion for older people — culturally grounded symptom capture and family-aligned care journeys."
 };
 
 export default function PitchDeckLayout({
